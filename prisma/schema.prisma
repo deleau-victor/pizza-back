@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Allergen {
+  id_allergen Int       @id @default(autoincrement())
+  name        String    @db.VarChar(50)
+  Comport     Comport[]
+}
+
+model Comport {
+  id_ingredient Int
+  id_allergen   Int
+  Ingredient    Ingredient @relation(fields: [id_ingredient], references: [id_ingredient], onUpdate: Restrict, map: "Comport_ibfk_1")
+  Allergen      Allergen   @relation(fields: [id_allergen], references: [id_allergen], onUpdate: Restrict, map: "Comport_ibfk_2")
+
+  @@id([id_ingredient, id_allergen])
+  @@index([id_allergen], map: "id_allergen")
+}
+
+model Compose {
+  id_pizza      Int
+  id_ingredient Int
+  Pizza         Pizza      @relation(fields: [id_pizza], references: [id_pizza], onUpdate: Restrict, map: "Compose_ibfk_1")
+  Ingredient    Ingredient @relation(fields: [id_ingredient], references: [id_ingredient], onUpdate: Restrict, map: "Compose_ibfk_2")
+
+  @@id([id_pizza, id_ingredient])
+  @@index([id_ingredient], map: "id_ingredient")
+}
+
+model Ingredient {
+  id_ingredient      Int             @id @default(autoincrement())
+  name               String          @unique(map: "name") @db.VarChar(50)
+  id_ingredient_type Int
+  Comport            Comport[]
+  Compose            Compose[]
+  Ingredient_Type    Ingredient_Type @relation(fields: [id_ingredient_type], references: [id_ingredient_type], onUpdate: Restrict, map: "Ingredient_ibfk_1")
+
+  @@index([id_ingredient_type], map: "id_ingredient_type")
+}
+
+model Ingredient_Type {
+  id_ingredient_type Int          @id @default(autoincrement())
+  name               String       @unique(map: "name") @db.VarChar(50)
+  Ingredient         Ingredient[]
+}
+
+model Pizza {
+  id_pizza       Int            @id @default(autoincrement())
+  name           String         @unique(map: "name") @db.VarChar(50)
+  price          Decimal        @db.Decimal(5, 2)
+  picture_url    String         @db.VarChar(100)
+  description    String?        @db.Text
+  id_category    Int
+  Compose        Compose[]
+  Pizza_Category Pizza_Category @relation(fields: [id_category], references: [id_category], onUpdate: Restrict, map: "Pizza_ibfk_1")
+
+  @@index([id_category], map: "id_category")
+}
+
+model Pizza_Category {
+  id_category Int     @id @default(autoincrement())
+  name        String  @unique(map: "name") @db.VarChar(50)
+  Pizza       Pizza[]
+}
