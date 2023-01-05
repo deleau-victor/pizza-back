@@ -4,8 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npx nodemon --exec 'ts-node-esm' api/index.ts"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
 	"license": "ISC",
